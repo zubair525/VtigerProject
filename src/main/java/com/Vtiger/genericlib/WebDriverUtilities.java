@@ -47,7 +47,7 @@ public class WebDriverUtilities {
 	 * @param timeOutInSeconds
 	 * @param element
 	 */
-	public void waitTillElementIsClickable(WebDriver driver, short timeOutInSeconds, WebElement element) {
+	public void waitTillElementIsClickable(WebDriver driver, int timeOutInSeconds, WebElement element) {
 		WebDriverWait wait = new WebDriverWait(driver, timeOutInSeconds);
 		wait.until(ExpectedConditions.elementToBeClickable(element));
 	}
@@ -142,25 +142,53 @@ public class WebDriverUtilities {
 	 * 
 	 * @param driver
 	 * @param expTitle
+	 * @throws InterruptedException
 	 */
-	public void switchToWindow(WebDriver driver, String expTitle) {
+	public void switchToWindow(WebDriver driver, String expTitle) throws InterruptedException {
+		boolean flag=false;
 		Set<String> allWindows = driver.getWindowHandles();
 		for (String windows : allWindows) {
 			driver.switchTo().window(windows);
 			String actTitle = driver.getTitle();
-			try {
-				actTitle.contains(expTitle);
+			System.out.println(actTitle);
+			if (actTitle.contains(expTitle)) {
+				flag=true;
 				break;
-			} catch (Exception e) {
-				System.err.println(e);
 			}
 		}
+		if(!flag) {
+			System.err.println("No Such Window available");
+		}
 	}
-
+	
+	public void switchToWindowByUrl(WebDriver driver, String expUrl) throws InterruptedException {
+		boolean flag=false;
+		Set<String> allWindows = driver.getWindowHandles();
+		for (String windows : allWindows) {
+			driver.switchTo().window(windows);
+			String actUrl = driver.getCurrentUrl();
+			System.out.println(actUrl);
+			if (actUrl.contains(expUrl)) {
+				flag=true;
+				break;
+			}
+		}
+		if(!flag) {
+			System.err.println("No Such Window available");
+		}
+	}
+	
+	/**
+	 * This method is used to switch from any child window to main window
+	 * @param driver
+	 */
 	public void switchToWindow(WebDriver driver) {
 		String window = driver.getWindowHandle();
+//		WebDriverWait wait=new WebDriverWait(driver, 10);
+//		wait.until(ExpectedConditions.numberOfWindowsToBe(1));
 		driver.switchTo().window(window);
 	}
+	
 
 	/**
 	 * This method is used to traverse the mouse pointer on the specific element.
